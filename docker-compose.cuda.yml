@@ -3,7 +3,7 @@ services:
   build:
    context: .
    dockerfile: Dockerfile.cuda
-  command: [ 'python', 'run.py', '--execution-providers', 'cuda' ]
+  command: [ 'python', 'run.py', '--execution-providers', 'cuda','--ui-layouts', 'default','--log-level','debug' ]
   volumes:
   - .assets:/facefusion/.assets
   ports:
@@ -13,5 +13,5 @@ services:
     reservations:
      devices:
      - driver: nvidia
-       capabilities: [ gpu, video ]
-	   device_ids: ['3']
+       capabilities: [ gpu ]
+       device_ids: ['3']
