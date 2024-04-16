@@ -1,4 +1,4 @@
-FROM docker.nju.edu.cn/nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu20.04
+FROM docker.nju.edu.cn/nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 ARG FACEFUSION_VERSION=2.5.1
 ENV GRADIO_SERVER_NAME=0.0.0.0
@@ -6,10 +6,17 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /facefusion
 RUN cat <<EOF > /etc/apt/sources.list 
-deb https://mirrors.cernet.edu.cn/ubuntu/ focal main restricted universe multiverse 
-deb https://mirrors.cernet.edu.cn/ubuntu/ focal-updates main restricted universe multiverse 
-deb https://mirrors.cernet.edu.cn/ubuntu/ focal-backports main restricted universe multiverse 
-deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse 
+deb https://mirrors.cernet.edu.cn/ubuntu/ jammy main restricted universe multiverse
+# deb-src https://mirrors.cernet.edu.cn/ubuntu/ jammy main restricted universe multiverse
+deb https://mirrors.cernet.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src https://mirrors.cernet.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+deb https://mirrors.cernet.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src https://mirrors.cernet.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+
+# deb https://mirrors.cernet.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+# # deb-src https://mirrors.cernet.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+
+deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse
 EOF
 
 RUN apt-get update
@@ -20,8 +27,11 @@ RUN apt-get install git -y
 RUN apt-get install curl -y
 RUN apt-get install ffmpeg -y
 
-RUN git clone https://github.com/facefusion/facefusion.git --branch ${FACEFUSION_VERSION} --single-branch .
-
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN git clone https://github.com/facefusion/facefusion.git --branch ${FACEFUSION_VERSION} --single-branch . -4
+RUN sed -i 's/numpy==1.26.4/numpy==1.24.4/g' requirements.txt
+RUN sed -i 's/scipy==1.12.0/scipy==1.10.1/g' requirements.txt
+RUN sed -i 's/tqdm==4.66.2/tqdm/g' requirements.txt
+#RUN pip config set global.index-url https://mirror.nju.edu.cn/pypi/web/simple
+RUN pip config set global.index-url https://pypi.org/simple
 RUN python install.py --onnxruntime cuda-12.2 --skip-conda
 
