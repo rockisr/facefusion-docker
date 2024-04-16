@@ -14,3 +14,4 @@ services:
      devices:
      - driver: nvidia
        capabilities: [ gpu, video ]
+	   device_ids: ['3']
