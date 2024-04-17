@@ -37,6 +37,7 @@ docker compose -f docker-compose.rocm.yml up
 
 Usage
 -----
+> attention: wait a rather long time for model loading, 1 minutes or so. You could see the expose output like 'http://....:7870' with 'docker compose logs'
 
 Browse the `CPU` container:
 
